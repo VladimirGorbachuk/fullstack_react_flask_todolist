@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Todos from './components/Todos'
-import About from './components/pages/About'
+
 import AddTodo from './components/AddTodo'
 import tempTodoList from './temporary_data/temp_todos'
-//import tempTodoList from './temporary_data/load_fake_todos'
 import Header from './components/Header'
+import Navbar from './components/layout/Navbar';
+
+import About from './components/pages/About'
+import TodoList from './components/pages/TodoList'
+
 import './App.css'
 import uuid from 'uuid'
 
@@ -43,6 +47,7 @@ class App extends Component {
     return (
        <Router>
          <div className="App">
+           <Navbar />
            <div className="container"> 
              <Header />
              <Route exact path = "/" render={props =>(
@@ -53,6 +58,7 @@ class App extends Component {
                 </React.Fragment>
              )}/>
              <Route path = "/about" component = {About}/>
+             <Route path = "/todolist" component = {TodoList}/>
 
            </div>
          </div>  
