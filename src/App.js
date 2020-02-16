@@ -1,17 +1,25 @@
 import React, { Component } from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
-import Todos from './components/Todos'
+import { Security, SecureRoute, ImplicitCallback } from '@okta/okta-react';
+import uuid from 'uuid';
 
-import AddTodo from './components/AddTodo'
-import tempTodoList from './temporary_data/temp_todos'
-import Header from './components/Header'
+import Todos from './components/Todos';
+import AddTodo from './components/AddTodo';
+import Header from './components/Header';
 import Navbar from './components/layout/Navbar';
 
-import About from './components/pages/About'
-import TodoList from './components/pages/TodoList'
+import About from './components/pages/About';
+import TodoList from './components/pages/TodoList';
+import Login from './components/auth/Login';
 
-import './App.css'
-import uuid from 'uuid'
+import tempTodoList from './temporary_data/temp_todos';
+import {my_private_client_id, my_private_security_issuer, my_private_security_URL} from './Private_data/Security_essentials';
+
+import './App.css';
+
+function onAuthRequired({history}) {
+    history.push('./login')
+}
 
 class App extends Component {
   
@@ -45,23 +53,30 @@ class App extends Component {
   render() {
      
     return (
-       <Router>
+      <Router>
+        <Security issuer={my_private_security_issuer}
+                  client_id={my_private_client_id}
+                  redirect_uri={window.location.origin + '/implicit/callback'}
+                  onAuthRequired={onAuthRequired}> 
          <div className="App">
            <Navbar />
            <div className="container"> 
              <Header />
-             <Route exact path = "/" render={props =>(
+             <SecureRoute exact path = "/" render={props =>(
                 <React.Fragment>
                    <h3>Вот что нужно делать:</h3>
                    <AddTodo addTodo={this.addTodo} />
                    <Todos todos = {this.state.todos} markComplete={this.markComplete} delTodo={this.delTodo}/>
                 </React.Fragment>
              )}/>
+             <Route path = '/login' render={() => <Login
+                baseUrl={my_private_security_URL}/>}/>
              <Route path = "/about" component = {About}/>
              <Route path = "/todolist" component = {TodoList}/>
 
            </div>
-         </div>  
+         </div> 
+         </Security>
        </Router>
       );
    }
