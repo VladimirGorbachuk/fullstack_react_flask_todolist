@@ -6,10 +6,9 @@ import uuid from 'uuid';
 import Todos from './components/Todos';
 import AddTodo from './components/AddTodo';
 import Header from './components/Header';
-import Navbar from './components/layout/Navbar';
 
 import About from './components/pages/About';
-import TodoList from './components/pages/TodoList';
+import Home from './components/pages/Home';
 import Login from './components/auth/Login';
 
 import tempTodoList from './temporary_data/temp_todos';
@@ -57,23 +56,22 @@ class App extends Component {
         <Security issuer={my_private_security_issuer}
                   client_id={my_private_client_id}
                   redirect_uri={window.location.origin + '/implicit/callback'}
-                  onAuthRequired={onAuthRequired}> 
+                  onAuthRequired={onAuthRequired}>
          <div className="App">
-           <Navbar />
            <div className="container"> 
              <Header />
-             <SecureRoute exact path = "/" render={props =>(
-                <React.Fragment>
+             <SecureRoute path = "/TodoList" exact = {true} render={props =>(
+               <React.Fragment>
                    <h3>Вот что нужно делать:</h3>
                    <AddTodo addTodo={this.addTodo} />
                    <Todos todos = {this.state.todos} markComplete={this.markComplete} delTodo={this.delTodo}/>
                 </React.Fragment>
              )}/>
-             <Route path = '/login' render={() => <Login
+             <Route path = "/about" exact = {true} component = {About}/>
+             <Route path = "/" exact = {true} component = {Home}/>
+             <Route path = '/login' exact = {true} render={() => <Login
                 baseUrl={my_private_security_URL}/>}/>
-             <Route path = "/about" component = {About}/>
-             <Route path = "/todolist" component = {TodoList}/>
-
+           <Route path = '/implicit/callback' component={ImplicitCallback}/>
            </div>
          </div> 
          </Security>
